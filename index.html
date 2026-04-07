@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo Frame Studio — Editor de Marcos para Fotos</title>
+  <meta name="description" content="Herramienta profesional para aplicar marcos y watermarks a fotos en lote. Recorta, ajusta brillo/contraste y descarga en alta calidad." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="header-left">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="app-title">Photo Frame Studio</h1>
+          <p class="app-subtitle">Editor de marcos para fotos en lote</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="version-badge">v1.0</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- Upload Section -->
+    <section class="upload-section">
+      <div class="upload-grid">
+        <!-- Frame Upload -->
+        <div class="upload-card" id="frame-upload-card">
+          <div style="display: flex; gap: var(--space-xs); margin-bottom: var(--space-md); background: var(--bg-tertiary); padding: 4px; border-radius: var(--radius-sm);">
+            <button class="format-btn active" id="btn-source-default" style="font-size: 0.75rem; padding: 6px;">Por Defecto (4 Esquinas)</button>
+            <button class="format-btn" id="btn-source-custom" style="font-size: 0.75rem; padding: 6px;">Cargar Personalizado</button>
+          </div>
+
+          <!-- Default Frames Zone -->
+          <div class="upload-zone" id="default-frames-zone">
+            <div class="upload-zone-content">
+              <div class="upload-icon frame-icon" style="background: var(--accent-success-subtle); color: var(--accent-success);">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+              </div>
+              <h3 class="upload-title">Marcos Listos</h3>
+              <p class="upload-hint">Usando los 4 marcos de la carpeta <code>/public/frames/</code>.</p>
+              <p class="upload-format">Cambiarán automáticamente según la posición elegida.</p>
+            </div>
+          </div>
+
+          <!-- Custom Frame Upload Zone -->
+          <div class="upload-zone" id="frame-drop-zone" style="display: none;">
+            <input type="file" id="frame-input" accept="image/png" hidden />
+            <div class="upload-zone-content" id="frame-zone-content">
+              <div class="upload-icon frame-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <rect x="7" y="7" width="10" height="10" rx="1"/>
+                </svg>
+              </div>
+              <h3 class="upload-title">Marco / Overlay</h3>
+              <p class="upload-hint">Arrastra tu marco PNG aquí o <span class="upload-link">haz clic para seleccionar</span></p>
+              <p class="upload-format">Solo archivos PNG con transparencia</p>
+            </div>
+            <div class="frame-preview-container" id="frame-preview-container" style="display:none;">
+              <img id="frame-preview-img" class="frame-preview-img" alt="Marco cargado" />
+              <button class="btn-remove-frame" id="btn-remove-frame" title="Quitar marco">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photos Upload -->
+        <div class="upload-card" id="photos-upload-card">
+          <div class="upload-zone" id="photos-drop-zone">
+            <input type="file" id="photos-input" accept="image/jpeg,image/png,image/webp" multiple hidden />
+            <div class="upload-zone-content" id="photos-zone-content">
+              <div class="upload-icon photos-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
+              <h3 class="upload-title">Fotos</h3>
+              <p class="upload-hint">Arrastra tus fotos aquí o <span class="upload-link">haz clic para seleccionar</span></p>
+              <p class="upload-format">JPG, PNG, WEBP — Múltiples archivos</p>
+            </div>
+          </div>
+          <div class="photos-count" id="photos-count" style="display:none;">
+            <span id="photos-count-number">0</span> fotos cargadas
+            <button class="btn-clear-photos" id="btn-clear-photos">Limpiar todo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Global Settings -->
+    <section class="settings-section" id="settings-section" style="display:none;">
+      <div class="settings-card">
+        <h2 class="section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Configuración Global
+        </h2>
+        <div class="settings-grid">
+          <!-- Position -->
+          <div class="setting-group">
+            <label class="setting-label">Posición del Marco</label>
+            <div class="position-selector" id="global-position">
+              <button class="position-btn active" data-position="bottom-left" title="Inferior Izquierda">
+                <div class="pos-preview"><div class="pos-dot" style="bottom:2px;left:2px;"></div></div>
+                <span>Inf. Izq.</span>
+              </button>
+              <button class="position-btn" data-position="top-left" title="Superior Izquierda">
+                <div class="pos-preview"><div class="pos-dot" style="top:2px;left:2px;"></div></div>
+                <span>Sup. Izq.</span>
+              </button>
+              <button class="position-btn" data-position="top-right" title="Superior Derecha">
+                <div class="pos-preview"><div class="pos-dot" style="top:2px;right:2px;"></div></div>
+                <span>Sup. Der.</span>
+              </button>
+              <button class="position-btn" data-position="bottom-right" title="Inferior Derecha">
+                <div class="pos-preview"><div class="pos-dot" style="bottom:2px;right:2px;"></div></div>
+                <span>Inf. Der.</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Frame Size -->
+          <div class="setting-group">
+            <label class="setting-label">Tamaño del Marco <span class="setting-value" id="frame-size-value">25%</span></label>
+            <input type="range" class="slider" id="global-frame-size" min="5" max="200" value="25" />
+            <div class="slider-labels">
+              <span>5%</span>
+              <span>200%</span>
+            </div>
+          </div>
+
+          <!-- Output Format -->
+          <div class="setting-group">
+            <label class="setting-label">Formato de Salida</label>
+            <div class="format-selector">
+              <button class="format-btn active" data-format="jpeg" id="format-jpg">JPG</button>
+              <button class="format-btn" data-format="png" id="format-png">PNG</button>
+            </div>
+          </div>
+
+          <!-- JPG Quality -->
+          <div class="setting-group" id="quality-group">
+            <label class="setting-label">Calidad JPG <span class="setting-value" id="quality-value">95%</span></label>
+            <input type="range" class="slider" id="global-quality" min="50" max="100" value="95" />
+            <div class="slider-labels">
+              <span>50%</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="setting-group setting-actions">
+            <button class="btn btn-primary" id="btn-apply-all">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Aplicar a Todas
+            </button>
+            <button class="btn btn-success" id="btn-download-all">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Descargar Todas (ZIP)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Image List -->
+    <section class="images-section" id="images-section" style="display:none;">
+      <div class="images-header">
+        <h2 class="section-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          Imágenes Cargadas
+        </h2>
+      </div>
+      <div class="images-list" id="images-list">
+        <!-- Dynamically populated -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Crop Modal -->
+  <div class="modal-overlay" id="crop-modal" style="display:none;">
+    <div class="modal crop-modal">
+      <div class="modal-header">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"/><path d="M1 6.13L16 6a2 2 0 0 1 2 2v15"/>
+          </svg>
+          Recortar Imagen — <span id="crop-filename"></span>
+        </h3>
+        <button class="modal-close" id="crop-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="crop-container" id="crop-container">
+          <canvas id="crop-canvas"></canvas>
+          <div class="crop-selection" id="crop-selection"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="crop-reset">Restablecer</button>
+        <div class="modal-footer-right">
+          <button class="btn btn-ghost" id="crop-cancel">Cancelar</button>
+          <button class="btn btn-primary" id="crop-apply">Aplicar Recorte</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div class="modal-overlay" id="preview-modal" style="display:none;">
+    <div class="modal preview-modal">
+      <div class="modal-header">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          Vista Previa — <span id="preview-filename"></span>
+        </h3>
+        <button class="modal-close" id="preview-close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="preview-container" id="preview-container">
+          <canvas id="preview-canvas"></canvas>
+        </div>
+        <div class="preview-info" id="preview-info"></div>
+      </div>
+      <div class="modal-footer">
+        <div></div>
+        <div class="modal-footer-right">
+          <button class="btn btn-ghost" id="preview-close-btn">Cerrar</button>
+          <button class="btn btn-success" id="preview-download">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Descargar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loading-overlay" style="display:none;">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p id="loading-text">Procesando imágenes...</p>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <p class="progress-text" id="progress-text">0 / 0</p>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
